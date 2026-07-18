@@ -1,0 +1,15 @@
+{
+  "id": "wall-list-01",
+  "resource": "wall-list",
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT id, services::text AS services, message, reactions::text AS reactions, created_at::text AS created_at FROM _inquiry WHERE wall_status = 'approved' ORDER BY created_at DESC LIMIT 100",
+        "parameters": []
+      }
+    }
+  ],
+  "returnables": ["id", "services", "message", "reactions", "created_at"]
+}

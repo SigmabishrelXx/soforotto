@@ -1,0 +1,45 @@
+{
+  "id": "admin-sign-up-01",
+  "resource": "admin-sign-up",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "expiration": 86400,
+    "encryption_key": "$ENV.JWT_SECRET_KEY",
+    "custom_claim_fields": ["id", "email"],
+    "property_name": "token"
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "payload_validation": [
+        {
+          "field": { "email": { "type": "EMAIL" } },
+          "max_length": 255
+        },
+        {
+          "field": { "password": { "type": "STRING" } },
+          "min_length": 8,
+          "max_length": 255
+        }
+      ],
+      "hashables": [
+        {
+          "property": "password",
+          "algorithm": "BCRYPT",
+          "options": {
+            "rounds_cost": 12,
+            "salt": "$ENV.MY_HASHING_SALT"
+          }
+        }
+      ],
+      "sql_query": {
+        "query": "INSERT INTO _admin (id, email, password, created_at) VALUES ($1, $2, $3, $4::timestamptz) RETURNING id, email",
+        "parameters": ["$GENERATOR.KSUID", "email", "password", "$DATETIME"],
+        "unique": ["email"]
+      }
+    }
+  ],
+  "returnables": ["id", "email", "token"]
+}

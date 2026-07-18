@@ -1,0 +1,15 @@
+{
+  "id": "weather-trends-01",
+  "resource": "weather-trends",
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT to_char(date_trunc('week', created_at), 'YYYY-MM-DD') AS week, tag, COUNT(*)::int AS count FROM _inquiry, jsonb_array_elements_text(services) AS tag GROUP BY 1, 2 HAVING COUNT(*) >= 5 ORDER BY 1 ASC",
+        "parameters": []
+      }
+    }
+  ],
+  "returnables": ["week", "tag", "count"]
+}

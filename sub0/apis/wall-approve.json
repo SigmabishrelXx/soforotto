@@ -1,0 +1,35 @@
+{
+  "id": "wall-approve-01",
+  "resource": "wall-approve",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_SECRET_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "payload_validation": [
+        {
+          "field": { "id": { "type": "STRING" } },
+          "min_length": 1,
+          "max_length": 32
+        }
+      ],
+      "sql_query": {
+        "query": "UPDATE _inquiry SET wall_status = 'approved' WHERE id = $1 AND wall_status = 'pending' RETURNING id",
+        "parameters": ["id"]
+      },
+      "broadcast_websocket_message": {
+        "broadcast_type": "ALL",
+        "action": "wall_updated"
+      }
+    }
+  ],
+  "returnables": ["id"]
+}

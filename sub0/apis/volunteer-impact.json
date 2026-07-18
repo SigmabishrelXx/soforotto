@@ -1,0 +1,17 @@
+{
+  "id": "volunteer-impact-01",
+  "resource": "volunteer-impact",
+  "tokenize": { "type": "JWT", "algorithm": "HS256", "encryption_key": "$ENV.JWT_SECRET_KEY" },
+  "protected": { "provide_as": "Authorization", "extract_claims": ["id"] },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT COUNT(*) FILTER (WHERE status = 'responded')::int AS responded, COUNT(*) FILTER (WHERE status = 'responded' AND updated_at > now() - interval '7 days')::int AS responded_this_week, COALESCE(SUM(COALESCE(reactions->>'not_alone','0')::int) FILTER (WHERE wall_status = 'approved'), 0)::int AS felt_less_alone FROM _inquiry",
+        "parameters": []
+      }
+    }
+  ],
+  "returnables": ["responded", "responded_this_week", "felt_less_alone"]
+}

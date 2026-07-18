@@ -1,0 +1,31 @@
+{
+  "id": "wall-react-01",
+  "resource": "wall-react",
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "payload_validation": [
+        {
+          "field": { "id": { "type": "STRING" } },
+          "min_length": 1,
+          "max_length": 32
+        },
+        {
+          "field": { "reaction": { "type": "STRING" } },
+          "min_length": 1,
+          "max_length": 20
+        }
+      ],
+      "sql_query": {
+        "query": "UPDATE _inquiry SET reactions = jsonb_set(reactions, ARRAY[$2], (COALESCE(reactions->>$2, '0')::int + 1)::text::jsonb) WHERE id = $1 AND wall_status = 'approved' AND reactions ? $2 RETURNING id, reactions::text AS reactions",
+        "parameters": ["id", "reaction"]
+      },
+      "broadcast_websocket_message": {
+        "broadcast_type": "ALL",
+        "action": "wall_reaction_update"
+      }
+    }
+  ],
+  "returnables": ["id", "reactions"]
+}

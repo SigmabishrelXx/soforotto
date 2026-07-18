@@ -1,0 +1,40 @@
+{
+  "id": "admin-sign-in-01",
+  "resource": "admin-sign-in",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "expiration": 86400,
+    "encryption_key": "$ENV.JWT_SECRET_KEY",
+    "custom_claim_fields": ["id", "email"],
+    "property_name": "token"
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "payload_validation": [
+        {
+          "field": { "email": { "type": "EMAIL" } },
+          "max_length": 255
+        },
+        {
+          "field": { "password": { "type": "STRING" } },
+          "min_length": 8,
+          "max_length": 255
+        }
+      ],
+      "sql_query": {
+        "query": "SELECT id, email, password FROM _admin WHERE email = $1",
+        "parameters": ["email"]
+      },
+      "verify_hashables": [
+        {
+          "property": "password",
+          "algorithm": "BCRYPT"
+        }
+      ]
+    }
+  ],
+  "returnables": ["id", "email", "token"]
+}

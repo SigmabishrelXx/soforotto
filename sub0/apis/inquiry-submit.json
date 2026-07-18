@@ -1,0 +1,43 @@
+{
+  "id": "inquiry-submit-01",
+  "resource": "inquiry-submit",
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "payload_validation": [
+        {
+          "field": {
+            "services": {
+              "type": "STRINGARRAY",
+              "arr_length": 4,
+              "items_min_length": 2,
+              "items_max_length": 20
+            }
+          }
+        },
+        {
+          "field": { "message": { "type": "STRING" } },
+          "min_length": 1,
+          "max_length": 2000
+        }
+      ],
+      "sql_query": {
+        "query": "INSERT INTO _inquiry (id, name, email, services, message, status, wall_status, reactions, created_at, updated_at) VALUES ($1, $2, $3, $4::jsonb, $5, $6, $7, $8::jsonb, $9::timestamptz, $10::timestamptz) RETURNING id, name, email",
+        "parameters": [
+          "$GENERATOR.KSUID",
+          "name",
+          "email",
+          "services",
+          "message",
+          "new",
+          "wall_status",
+          "{\"same\":0,\"strength\":0,\"not_alone\":0}",
+          "$DATETIME",
+          "$DATETIME"
+        ]
+      }
+    }
+  ],
+  "returnables": ["id", "name", "email"]
+}

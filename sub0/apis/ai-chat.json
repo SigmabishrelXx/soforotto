@@ -1,0 +1,31 @@
+{
+  "id": "ai-chat-01",
+  "resource": "ai-chat",
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "HTTPREQUEST",
+      "payload_validation": [
+        {
+          "field": { "messages": { "type": "ARRAY" } }
+        }
+      ],
+      "http": {
+        "url": "https://api.anthropic.com/v1/messages",
+        "method": "POST",
+        "headers": {
+          "x-api-key": "$ENV.ANTHROPIC_API_KEY",
+          "anthropic-version": "2023-06-01",
+          "content-type": "application/json"
+        },
+        "request_body": {
+          "model": "claude-sonnet-5",
+          "max_tokens": 400,
+          "system": "$ENV.LOWKEY_AI_SYSTEM_PROMPT",
+          "messages": "$PAYLOAD.messages"
+        }
+      }
+    }
+  ],
+  "returnables": ["content"]
+}

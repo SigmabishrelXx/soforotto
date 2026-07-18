@@ -1,0 +1,24 @@
+{
+  "id": "inquiry-list-01",
+  "resource": "inquiry-list",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_SECRET_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "sql_query": {
+        "query": "SELECT id, name, email, services::text AS services, message, status, wall_status, created_at::text AS created_at FROM _inquiry ORDER BY created_at DESC",
+        "parameters": []
+      }
+    }
+  ],
+  "returnables": ["id", "name", "email", "services", "message", "status", "wall_status", "created_at"]
+}

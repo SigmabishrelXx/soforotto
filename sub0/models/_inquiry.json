@@ -1,0 +1,54 @@
+{
+  "id": {
+    "type": "String",
+    "primary_key": true,
+    "max_length": 32
+  },
+  "name": {
+    "type": "String",
+    "optional": true,
+    "max_length": 255,
+    "fts": true,
+    "indexable": true
+  },
+  "email": {
+    "type": "String",
+    "optional": true,
+    "max_length": 255,
+    "indexable": true
+  },
+  "services": {
+    "type": "JSON_ARRAY",
+    "property_type": "String"
+  },
+  "message": {
+    "type": "String",
+    "max_length": 2000,
+    "fts": true
+  },
+  "status": {
+    "type": "String",
+    "max_length": 32,
+    "indexable": true
+  },
+  "wall_status": {
+    "type": "String",
+    "max_length": 20,
+    "indexable": true
+  },
+  "reactions": {
+    "type": "JSON_OBJECT",
+    "properties": {
+      "same": { "type": "Number" },
+      "strength": { "type": "Number" },
+      "not_alone": { "type": "Number" }
+    }
+  },
+  "created_at": {
+    "type": "DateTime",
+    "indexable": true
+  },
+  "updated_at": {
+    "type": "DateTime"
+  }
+}

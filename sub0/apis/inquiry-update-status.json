@@ -1,0 +1,36 @@
+{
+  "id": "inquiry-update-status-01",
+  "resource": "inquiry-update-status",
+  "tokenize": {
+    "type": "JWT",
+    "algorithm": "HS256",
+    "encryption_key": "$ENV.JWT_SECRET_KEY"
+  },
+  "protected": {
+    "provide_as": "Authorization",
+    "extract_claims": ["id"]
+  },
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "payload_validation": [
+        {
+          "field": { "id": { "type": "STRING" } },
+          "min_length": 1,
+          "max_length": 32
+        },
+        {
+          "field": { "status": { "type": "STRING" } },
+          "min_length": 1,
+          "max_length": 32
+        }
+      ],
+      "sql_query": {
+        "query": "UPDATE _inquiry SET status = $1, updated_at = $2::timestamptz WHERE id = $3 RETURNING id, status",
+        "parameters": ["status", "$DATETIME", "id"]
+      }
+    }
+  ],
+  "returnables": ["id", "status"]
+}

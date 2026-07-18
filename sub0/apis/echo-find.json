@@ -1,0 +1,18 @@
+{
+  "id": "echo-find-01",
+  "resource": "echo-find",
+  "actionables": [
+    {
+      "id": 1,
+      "mode": "QUERY",
+      "payload_validation": [
+        { "field": { "message": { "type": "STRING" } }, "min_length": 1, "max_length": 2000 }
+      ],
+      "sql_query": {
+        "query": "SELECT id, services::text AS services, message, reactions::text AS reactions, created_at::text AS created_at, ts_rank(to_tsvector('english', message), plainto_tsquery('english', $1))::float8 AS rank FROM _inquiry WHERE wall_status = 'approved' AND to_tsvector('english', message) @@ plainto_tsquery('english', $1) ORDER BY rank DESC, (COALESCE(reactions->>'same','0')::int + COALESCE(reactions->>'not_alone','0')::int) DESC LIMIT 1",
+        "parameters": ["message"]
+      }
+    }
+  ],
+  "returnables": ["id", "services", "message", "reactions", "created_at", "rank"]
+}

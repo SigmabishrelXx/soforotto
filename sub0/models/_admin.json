@@ -1,0 +1,19 @@
+{
+  "id": {
+    "type": "String",
+    "primary_key": true,
+    "max_length": 32
+  },
+  "email": {
+    "type": "String",
+    "max_length": 255,
+    "indexable": true
+  },
+  "password": {
+    "type": "String",
+    "max_length": 255
+  },
+  "created_at": {
+    "type": "DateTime"
+  }
+}
