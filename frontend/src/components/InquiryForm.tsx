@@ -5,6 +5,7 @@ import { Check, Lock, Sparkles } from 'lucide-react'
 import { submitInquiry } from '../lib/api'
 import { findEcho, type Echo } from '../lib/echoes'
 import { rateLimit, secondsFromMs } from '../lib/rateLimit'
+import NoteJourney from './NoteJourney'
 
 type InquiryFormProps = {
   services: string[]
@@ -163,37 +164,7 @@ export function InquiryForm({ services }: InquiryFormProps) {
 
       <aside className="rounded-3xl border border-[#ece2d9] bg-[#fffdf9] p-6 sm:p-7 self-start">
         <p className="text-xs uppercase tracking-widest text-[#544b43] mb-6">What happens next</p>
-        <ol className="flex flex-col gap-6">
-          {[
-            {
-              t: 'You send it, anonymously',
-              d: 'No account, no name needed. It leaves your hands the moment you hit send.',
-            },
-            {
-              t: 'A trained volunteer reads it',
-              d: 'A real person, not a bot, usually within a day. They respond with care.',
-            },
-            shareOnWall
-              ? {
-                  t: 'It goes up on The Wall',
-                  d: 'Once a volunteer approves it, others facing the same thing can find it and send support, never with your name.',
-                }
-              : {
-                  t: 'You hear back',
-                  d: 'If you left an email, a reply comes to you. If not, you can check back here anytime.',
-                },
-          ].map((step, i) => (
-            <li key={i} className="flex gap-4">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2b2420] text-white text-xs font-semibold">
-                {i + 1}
-              </span>
-              <div>
-                <p className="text-sm font-semibold text-[#2b2420]">{step.t}</p>
-                <p className="text-sm text-[#544b43] mt-0.5 leading-relaxed">{step.d}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
+        <NoteJourney shareOnWall={shareOnWall} />
         <div className="mt-6 pt-5 border-t border-[#ece2d9] flex items-center gap-2 text-xs text-[#544b43]">
           <Lock size={13} className="shrink-0" />
           Nothing here is traced back to you unless you choose to leave an email.
