@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Navbar } from '../components/Navbar'
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Hero } from '../components/Hero'
 import { TrustSection } from '../components/TrustSection'
 import { ServicePills } from '../components/ServicePills'
@@ -12,6 +12,16 @@ import { Footer } from '../components/Footer'
 export function Landing() {
   const [services, setServices] = useState<string[]>([])
   const [isChatOpen, setIsChatOpen] = useState(false)
+  const { hash } = useLocation()
+
+  // Arriving from another route via /#section: scroll there once laid out.
+  useEffect(() => {
+    if (!hash) return
+    const t = setTimeout(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth' })
+    }, 60)
+    return () => clearTimeout(t)
+  }, [hash])
 
   const scrollToInquiry = () => {
     document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' })
@@ -19,8 +29,6 @@ export function Landing() {
 
   return (
     <div>
-      <Navbar />
-
       <Hero onShare={scrollToInquiry} onOpenChat={() => setIsChatOpen(true)} />
 
       <TrustSection />

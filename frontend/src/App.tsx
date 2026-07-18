@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { Navbar } from './components/Navbar'
 import { Landing } from './pages/Landing'
 import { Wall } from './pages/Wall'
 import { PrivacyPolicy } from './pages/PrivacyPolicy'
@@ -7,9 +8,17 @@ import { BuiltWith } from './pages/BuiltWith'
 import { AdminLogin } from './pages/AdminLogin'
 import { AdminDashboard } from './pages/AdminDashboard'
 
+// The floating nav follows every public page; admin screens keep the space.
+function Chrome() {
+  const { pathname } = useLocation()
+  if (pathname.startsWith('/admin')) return null
+  return <Navbar />
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <Chrome />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/wall" element={<Wall />} />

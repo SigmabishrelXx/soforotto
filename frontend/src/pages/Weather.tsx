@@ -55,7 +55,7 @@ export function Weather() {
   const summary = thisWeekSummary()
 
   return (
-    <div className="min-h-screen font-sans px-6 py-16 max-w-4xl mx-auto">
+    <div className="min-h-screen font-sans px-6 pt-28 pb-16 max-w-4xl mx-auto">
       <Link to="/" className="text-sm text-[#544b43] hover:opacity-70 transition-opacity inline-flex items-center gap-1.5">
         <ArrowLeft size={15} /> Back to Soforotto
       </Link>

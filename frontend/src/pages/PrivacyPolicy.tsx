@@ -12,7 +12,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export function PrivacyPolicy() {
   return (
-    <div className="min-h-screen font-sans px-6 py-16 max-w-2xl mx-auto">
+    <div className="min-h-screen font-sans px-6 pt-28 pb-16 max-w-2xl mx-auto">
       <Link to="/" className="text-sm text-[#544b43] hover:opacity-70 transition-opacity">
         &larr; Back to Soforotto
       </Link>

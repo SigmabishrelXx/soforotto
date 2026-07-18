@@ -48,7 +48,7 @@ export function Wall() {
     activeTopic === 'All' ? posts : posts.filter((p) => p.services.includes(activeTopic))
 
   return (
-    <div className="min-h-screen font-sans px-6 py-16 max-w-6xl mx-auto">
+    <div className="min-h-screen font-sans px-6 pt-28 pb-16 max-w-6xl mx-auto">
       <Link to="/" className="text-sm text-[#544b43] hover:opacity-70 transition-opacity">
         &larr; Back to Soforotto
       </Link>

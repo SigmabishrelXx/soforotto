@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Home, LifeBuoy, Info, HandHeart, Lock, Mail, MessagesSquare, CloudSun } from 'lucide-react'
 import { LimelightNav, type NavItem } from './ui/limelight-nav'
 
@@ -16,14 +16,27 @@ const SPY_SECTIONS = [
   { id: 'privacy', index: 5 },
 ]
 
+// On route pages there are no sections to spy; the glow sits on the route's
+// own nav item instead.
+const ROUTE_INDEX: Record<string, number> = {
+  '/weather': 6,
+  '/wall': 7,
+  '/privacy-policy': 5,
+}
+
 export function Navbar() {
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [activeIndex, setActiveIndex] = useState(0)
   // After a click we briefly stop reacting to scroll, so the glow doesn't fight
   // the smooth-scroll animation on its way to the target section.
   const lockUntil = useRef(0)
 
   useEffect(() => {
+    if (pathname !== '/') {
+      setActiveIndex(ROUTE_INDEX[pathname] ?? 0)
+      return
+    }
     // Computed directly on each scroll event (no rAF throttle): it's only four
     // getBoundingClientRect reads, and setActiveIndex is a no-op in React when
     // the value is unchanged, so this stays cheap and re-renders only on a real
@@ -49,7 +62,7 @@ export function Navbar() {
       window.removeEventListener('scroll', compute)
       window.removeEventListener('resize', compute)
     }
-  }, [])
+  }, [pathname])
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id)
@@ -58,7 +71,13 @@ export function Navbar() {
   }
 
   const items: NavItem[] = [
-    { id: 'home', icon: <Home />, label: 'Home', onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+    {
+      id: 'home',
+      icon: <Home />,
+      label: 'Home',
+      onClick: () =>
+        pathname === '/' ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate('/'),
+    },
     { id: 'contact', icon: <Mail />, label: 'Get in touch', onClick: () => scrollTo('inquiry') },
     { id: 'resources', icon: <LifeBuoy />, label: 'Resources', onClick: () => scrollTo('resources') },
     { id: 'about', icon: <Info />, label: 'About', onClick: () => scrollTo('about') },
