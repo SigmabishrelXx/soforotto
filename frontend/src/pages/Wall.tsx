@@ -88,6 +88,15 @@ export function Wall() {
                   {s}
                 </span>
               ))}
+              {post.isExample && (
+                <span
+                  className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full"
+                  style={{ background: '#f0e7dd', color: '#8a7d72' }}
+                  title="An illustrative example, not a real submission"
+                >
+                  Example
+                </span>
+              )}
             </div>
             <p className="lk-note-text">{post.message}</p>
             <div className="lk-wall-reactions">
@@ -103,14 +112,16 @@ export function Wall() {
                 </button>
               ))}
             </div>
-            <button
-              type="button"
-              onClick={() => setConnectTo(post)}
-              className="mt-4 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-[#2b2420] hover:opacity-60 transition-opacity"
-            >
-              <MessageCircleHeart size={15} />
-              Reach out to them
-            </button>
+            {!post.isExample && (
+              <button
+                type="button"
+                onClick={() => setConnectTo(post)}
+                className="mt-4 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-[#2b2420] hover:opacity-60 transition-opacity"
+              >
+                <MessageCircleHeart size={15} />
+                Reach out to them
+              </button>
+            )}
           </div>
         ))}
       </div>

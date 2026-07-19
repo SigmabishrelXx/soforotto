@@ -38,6 +38,9 @@ export type WallPost = {
   message: string
   reactions: WallReactions
   created_at: string
+  // True for the seeded example notes. The UI tags these so a live visitor is
+  // never misled into thinking illustrative content is a real submission.
+  isExample?: boolean
 }
 
 // Seed posts shown on the Wall in demo mode so it isn't empty during a demo.
@@ -222,22 +225,33 @@ export function approveToWall(token: string, id: string) {
 // Mutable in-memory copy so reactions persist across calls during a demo.
 const demoWall: WallPost[] = DEMO_WALL_POSTS.map((p) => ({ ...p, reactions: { ...p.reactions } }))
 
+// The example notes, tagged so the UI can label them. Shown in demo mode, and
+// used to fill the real Wall while it's still sparse so a live visitor never
+// lands on an empty page. They are never written to the database.
+const exampleWall = (): WallPost[] =>
+  demoWall.map((p) => ({ ...p, reactions: { ...p.reactions }, isExample: true }))
+
 export async function listWallPosts() {
   if (AI_DEMO_MODE) {
     await new Promise((r) => setTimeout(r, 300))
-    return demoWall.map((p) => ({ ...p, reactions: { ...p.reactions } }))
+    return exampleWall()
   }
   const data = await request<WallPost[]>('/wall-list', { method: 'GET' })
-  return asRows<WallPost>(data).map((row) => ({
+  const real = asRows<WallPost>(data).map((row) => ({
     ...row,
     services: parseJsonish<string[]>(row.services, []),
     reactions: parseJsonish<WallReactions>(row.reactions, { same: 0, strength: 0, not_alone: 0 }),
     created_at: normalizeTimestamp(row.created_at),
+    isExample: false,
   }))
+  // Real posts first; top up a thin Wall with clearly labeled examples so it
+  // never looks dead before real notes come in.
+  return real.length >= 4 ? real : [...real, ...exampleWall()]
 }
 
 export async function reactToWallPost(id: string, reaction: keyof WallReactions) {
-  if (AI_DEMO_MODE) {
+  // Example cards (demo ids) react locally and never hit the network, in any mode.
+  if (AI_DEMO_MODE || id.startsWith('demo-')) {
     const post = demoWall.find((p) => p.id === id)
     if (post) post.reactions[reaction] += 1
     return { id, reactions: post ? { ...post.reactions } : { same: 0, strength: 0, not_alone: 0 } }
