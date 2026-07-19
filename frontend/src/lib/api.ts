@@ -1,4 +1,12 @@
 import { demoReply } from './aiDemo'
+import {
+  addDemoInquiry,
+  approveDemoInquiry,
+  listDemoApprovedWall,
+  listDemoInquiries,
+  reactDemoApproved,
+  setDemoInquiryStatus,
+} from './demoInbox'
 
 const API_BASE = import.meta.env.VITE_SUB0_API_BASE ?? 'http://localhost:4000'
 const WS_BASE = import.meta.env.VITE_SUB0_WS_BASE ?? API_BASE.replace(/^http/, 'ws')
@@ -13,7 +21,7 @@ export const AI_DEMO_MODE =
 // True only when a real Sub0 backend URL is configured. Distinct from
 // AI_DEMO_MODE: a deploy can have a real backend while keeping the AI chat
 // scripted (VITE_AI_DEMO_MODE=true), and its form submits must still be real.
-const HAS_BACKEND = Boolean(import.meta.env.VITE_SUB0_API_BASE)
+export const HAS_BACKEND = Boolean(import.meta.env.VITE_SUB0_API_BASE)
 
 export type Inquiry = {
   id: string
@@ -24,6 +32,8 @@ export type Inquiry = {
   status: string
   wall_status: string
   created_at: string
+  // Only set in demo mode: marks the seeded example notes in the inbox.
+  isSample?: boolean
 }
 
 export type WallReactions = {
@@ -135,10 +145,11 @@ export async function submitInquiry(payload: {
   shareOnWall: boolean
 }) {
   if (!HAS_BACKEND) {
-    // Demo mode: accept the note locally so the flow (and the Echo that
-    // follows) works without a deployed backend.
+    // Demo mode: save the note to the local inbox so it actually shows up on
+    // the moderator side (and the Echo that follows still works).
     await new Promise((r) => setTimeout(r, 600))
-    return { id: `demo-${Date.now()}`, name: payload.name, email: payload.email }
+    const saved = addDemoInquiry(payload)
+    return { id: saved.id, name: saved.name, email: saved.email }
   }
   return request<{ id: string; name: string; email: string }>('/inquiry-submit', {
     method: 'POST',
@@ -153,6 +164,15 @@ export async function submitInquiry(payload: {
 }
 
 export async function adminSignIn(payload: { email: string; password: string }) {
+  if (!HAS_BACKEND) {
+    // Demo mode: no real auth server. Any non-empty credentials open the
+    // moderator view, which only ever shows this browser's local demo data.
+    await new Promise((r) => setTimeout(r, 400))
+    if (!payload.email || !payload.password) {
+      throw new ApiError('Enter an email and password.', 400)
+    }
+    return { id: 'demo-admin', email: payload.email, token: 'demo-token' }
+  }
   const data = await request<{ id: string; email: string; token: string }>('/admin-sign-in', {
     method: 'POST',
     body: JSON.stringify(payload),
@@ -195,6 +215,10 @@ function asRows<T extends { id?: unknown }>(data: unknown): T[] {
 }
 
 export async function listInquiries(token: string) {
+  if (!HAS_BACKEND) {
+    await new Promise((r) => setTimeout(r, 300))
+    return listDemoInquiries()
+  }
   const data = await request<Inquiry[]>('/inquiry-list', {
     method: 'GET',
     token,
@@ -207,6 +231,10 @@ export async function listInquiries(token: string) {
 }
 
 export function updateInquiryStatus(token: string, id: string, status: string) {
+  if (!HAS_BACKEND) {
+    setDemoInquiryStatus(id, status)
+    return Promise.resolve({ id, status })
+  }
   return request<{ id: string; status: string }>('/inquiry-update-status', {
     method: 'POST',
     token,
@@ -215,6 +243,10 @@ export function updateInquiryStatus(token: string, id: string, status: string) {
 }
 
 export function approveToWall(token: string, id: string) {
+  if (!HAS_BACKEND) {
+    approveDemoInquiry(id)
+    return Promise.resolve({ id })
+  }
   return request<{ id: string }>('/wall-approve', {
     method: 'POST',
     token,
@@ -234,7 +266,9 @@ const exampleWall = (): WallPost[] =>
 export async function listWallPosts() {
   if (AI_DEMO_MODE) {
     await new Promise((r) => setTimeout(r, 300))
-    return exampleWall()
+    // Notes you approve in the demo moderator view show first (as real notes),
+    // then the labeled examples fill out the rest.
+    return [...listDemoApprovedWall(), ...exampleWall()]
   }
   const data = await request<WallPost[]>('/wall-list', { method: 'GET' })
   const real = asRows<WallPost>(data).map((row) => ({
@@ -250,11 +284,16 @@ export async function listWallPosts() {
 }
 
 export async function reactToWallPost(id: string, reaction: keyof WallReactions) {
-  // Example cards (demo ids) react locally and never hit the network, in any mode.
-  if (AI_DEMO_MODE || id.startsWith('demo-')) {
+  // Example cards and demo-approved notes react locally, never the network.
+  if (AI_DEMO_MODE || id.startsWith('demo-') || id.startsWith('sub-')) {
     const post = demoWall.find((p) => p.id === id)
-    if (post) post.reactions[reaction] += 1
-    return { id, reactions: post ? { ...post.reactions } : { same: 0, strength: 0, not_alone: 0 } }
+    if (post) {
+      post.reactions[reaction] += 1
+      return { id, reactions: { ...post.reactions } }
+    }
+    const approved = reactDemoApproved(id, reaction)
+    if (approved) return { id, reactions: approved }
+    return { id, reactions: { same: 0, strength: 0, not_alone: 0 } }
   }
   const data = await request<{ id: string; reactions: WallReactions }>('/wall-react', {
     method: 'POST',

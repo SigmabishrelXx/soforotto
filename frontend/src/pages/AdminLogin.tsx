@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { adminSignIn } from '../lib/api'
+import { adminSignIn, HAS_BACKEND } from '../lib/api'
 
 export function AdminLogin() {
   const navigate = useNavigate()
@@ -31,6 +31,12 @@ export function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center font-sans px-6">
       <form onSubmit={handleSubmit} className="w-full max-w-sm flex flex-col gap-4">
         <h1 className="text-2xl font-medium tracking-tight mb-2">Volunteer sign in</h1>
+        {!HAS_BACKEND && (
+          <p className="text-xs text-[#544b43] bg-[#f7f0e9] border border-[#ece2d9] rounded-lg px-3 py-2 -mt-1">
+            Demo preview: any email and password will sign you in. You&apos;ll see this
+            browser&apos;s own demo submissions, nothing real.
+          </p>
+        )}
         <input
           name="email"
           type="email"
