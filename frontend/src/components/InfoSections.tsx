@@ -10,6 +10,7 @@ import {
   Award,
 } from 'lucide-react'
 import { VolunteerModal } from './VolunteerModal'
+import { RoleJourney } from './RoleJourney'
 import { ScrollScaleReveal } from './ui/scroll-scale-reveal'
 
 const RESOURCES = [
@@ -195,7 +196,7 @@ export function InfoSections() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-80px' }}
               transition={{ duration: 0.6, delay: index * 0.12 }}
-              className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-8 sm:py-10 border-b border-[#ece2d9] last:border-b-0"
+              className="grid sm:grid-cols-2 items-center gap-6 sm:gap-12 py-8 sm:py-10 border-b border-[#ece2d9] last:border-b-0"
             >
               <div>
                 <p
@@ -207,14 +208,15 @@ export function InfoSections() {
                 <p className="text-sm sm:text-base text-[#544b43] mt-1 max-w-md">
                   {opening.blurb}
                 </p>
+                <button
+                  type="button"
+                  onClick={() => setVolunteerRole(opening.role)}
+                  className="mt-4 inline-block text-[#2b2420] uppercase text-xs font-medium tracking-widest hover:opacity-70 transition-opacity"
+                >
+                  Apply &rarr;
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setVolunteerRole(opening.role)}
-                className="text-[#2b2420] uppercase text-xs font-medium tracking-widest hover:opacity-70 transition-opacity whitespace-nowrap self-start sm:self-auto"
-              >
-                Apply &rarr;
-              </button>
+              <RoleJourney role={opening.role as 'Peer Listener' | 'Community Moderator'} />
             </motion.div>
           ))}
         </div>
