@@ -1,22 +1,39 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { MessageCircleHeart } from 'lucide-react'
-import { listWallPosts, reactToWallPost, connectWallSocket, type WallPost } from '../lib/api'
+import { listWallPosts, connectWallSocket, type WallPost } from '../lib/api'
 import { WallConnectModal } from '../components/WallConnectModal'
 
 const TOPICS = ['All', 'School', 'Friends & Bullying', 'Family', 'Something else']
 
-const REACTIONS: { key: 'same' | 'strength' | 'not_alone'; label: string; emoji: string }[] = [
+type ReactionKey = 'same' | 'strength' | 'not_alone'
+
+const REACTIONS: { key: ReactionKey; label: string; emoji: string }[] = [
   { key: 'same', label: 'Same', emoji: '🤍' },
   { key: 'strength', label: 'Strength', emoji: '💪' },
   { key: 'not_alone', label: "You're not alone", emoji: '👋' },
 ]
+
+// Your own reactions, remembered per browser so each one counts once and can
+// be taken back. Reactions here are an anonymous acknowledgement, not a synced
+// vote, so this stays client-side.
+const MY_REACTIONS_KEY = 'soforotto_my_reactions'
+type MyReactions = Record<string, Partial<Record<ReactionKey, boolean>>>
+
+function loadMyReactions(): MyReactions {
+  try {
+    return JSON.parse(localStorage.getItem(MY_REACTIONS_KEY) || '{}') as MyReactions
+  } catch {
+    return {}
+  }
+}
 
 export function Wall() {
   const [posts, setPosts] = useState<WallPost[]>([])
   const [loading, setLoading] = useState(true)
   const [activeTopic, setActiveTopic] = useState('All')
   const [connectTo, setConnectTo] = useState<WallPost | null>(null)
+  const [mine, setMine] = useState<MyReactions>(loadMyReactions)
 
   const refresh = useCallback(() => {
     listWallPosts()
@@ -31,17 +48,21 @@ export function Wall() {
     return disconnect
   }, [refresh])
 
-  const react = async (id: string, reaction: 'same' | 'strength' | 'not_alone') => {
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, reactions: { ...p.reactions, [reaction]: p.reactions[reaction] + 1 } } : p,
-      ),
-    )
-    try {
-      await reactToWallPost(id, reaction)
-    } catch {
-      refresh()
-    }
+  // One reaction of each kind per person: click to add, click again to take it
+  // back. Remembered per browser so it survives reloads.
+  const toggleReaction = (id: string, key: ReactionKey) => {
+    setMine((prev) => {
+      const current = { ...(prev[id] ?? {}) }
+      if (current[key]) delete current[key]
+      else current[key] = true
+      const next = { ...prev, [id]: current }
+      try {
+        localStorage.setItem(MY_REACTIONS_KEY, JSON.stringify(next))
+      } catch {
+        /* ignore storage failures */
+      }
+      return next
+    })
   }
 
   const visible =
@@ -100,17 +121,27 @@ export function Wall() {
             </div>
             <p className="lk-note-text">{post.message}</p>
             <div className="lk-wall-reactions">
-              {REACTIONS.map((r) => (
-                <button
-                  key={r.key}
-                  type="button"
-                  className="lk-reaction-btn"
-                  onClick={() => react(post.id, r.key)}
-                >
-                  <span>{r.emoji}</span>
-                  {post.reactions[r.key]}
-                </button>
-              ))}
+              {REACTIONS.map((r) => {
+                const reacted = !!mine[post.id]?.[r.key]
+                return (
+                  <button
+                    key={r.key}
+                    type="button"
+                    aria-pressed={reacted}
+                    className="lk-reaction-btn"
+                    style={
+                      reacted
+                        ? { background: '#fbe6dc', color: '#c85a34', boxShadow: 'inset 0 0 0 1.5px #e8734a' }
+                        : undefined
+                    }
+                    onClick={() => toggleReaction(post.id, r.key)}
+                    title={reacted ? 'You reacted. Click to take it back.' : r.label}
+                  >
+                    <span>{r.emoji}</span>
+                    {post.reactions[r.key] + (reacted ? 1 : 0)}
+                  </button>
+                )
+              })}
             </div>
             {!post.isExample && (
               <button
