@@ -68,11 +68,11 @@ const PRIVACY_POINTS = [
 
 function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
-    <div className="mb-14 sm:mb-16 md:mb-20">
+    <div className="mb-10 sm:mb-12 md:mb-14">
       <p className="text-xs uppercase tracking-[0.2em] text-[#544b43] mb-3">{eyebrow}</p>
       <h2
-        className="font-black uppercase tracking-tight text-[#2b2420] leading-none"
-        style={{ fontSize: 'clamp(2.75rem, 9vw, 5.5rem)' }}
+        className="font-bold tracking-tight text-[#2b2420] leading-[1.05]"
+        style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)' }}
       >
         {title}
       </h2>
@@ -255,12 +255,18 @@ export function InfoSections() {
           transition={{ duration: 0.6 }}
           className="mt-12 sm:mt-16 rounded-3xl border border-[#ece2d9] bg-[#fffdf9] p-6 sm:p-8"
         >
-          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-6">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-6">
             <p className="text-xs uppercase tracking-widest text-[#544b43]">
               What listening adds up to
             </p>
+            <span
+              className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full"
+              style={{ background: '#f0e7dd', color: '#8a7d72' }}
+            >
+              Example
+            </span>
             <p className="text-[11px] text-[#8a7d72]">
-              a peek at one listener&apos;s impact page
+              an illustration of one listener&apos;s impact page
             </p>
           </div>
 

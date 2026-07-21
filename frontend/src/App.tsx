@@ -7,6 +7,7 @@ import { Weather } from './pages/Weather'
 import { BuiltWith } from './pages/BuiltWith'
 import { AdminLogin } from './pages/AdminLogin'
 import { AdminDashboard } from './pages/AdminDashboard'
+import { NotFound } from './pages/NotFound'
 
 // The floating nav follows every public page; admin screens keep the space.
 function Chrome() {
@@ -27,6 +28,7 @@ function App() {
         <Route path="/built-with" element={<BuiltWith />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )

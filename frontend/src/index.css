@@ -801,13 +801,12 @@ body {
 }
 
 .lk-share-title {
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: -0.03em;
-  line-height: 0.95;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
   color: var(--text);
   margin: 0;
-  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  font-size: clamp(2rem, 5vw, 3.25rem);
 }
 
 .lk-share-panel {
