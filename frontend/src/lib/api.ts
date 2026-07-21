@@ -134,7 +134,14 @@ async function request<T>(
     throw new ApiError(body.message ?? `Request failed with ${response.status}`, response.status)
   }
 
-  return response.json() as Promise<T>
+  // Sub0 wraps every response as { success, message, data }. Every caller wants
+  // the inner `data` (which may be null for an empty result), so unwrap it here.
+  // Fall back to the raw JSON if a response ever isn't enveloped.
+  const json = (await response.json()) as unknown
+  if (json && typeof json === 'object' && 'data' in (json as Record<string, unknown>)) {
+    return (json as { data: T }).data
+  }
+  return json as T
 }
 
 export async function submitInquiry(payload: {
