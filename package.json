@@ -1,0 +1,8 @@
+{
+  "name": "soforotto",
+  "private": true,
+  "description": "Soforotto, anonymous peer support for teens. Frontend lives in frontend/.",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build"
+  }
+}
