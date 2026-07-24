@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Hero } from '../components/Hero'
+import { HowItWorks } from '../components/HowItWorks'
 import { TrustSection } from '../components/TrustSection'
 import { ServicePills } from '../components/ServicePills'
 import { InquiryForm } from '../components/InquiryForm'
@@ -30,6 +31,8 @@ export function Landing() {
   return (
     <div>
       <Hero onShare={scrollToInquiry} onOpenChat={() => setIsChatOpen(true)} />
+
+      <HowItWorks />
 
       <TrustSection />
 
