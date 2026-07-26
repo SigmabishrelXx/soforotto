@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ShieldAlert } from 'lucide-react'
 import { listInquiries, updateInquiryStatus, approveToWall, type Inquiry } from '../lib/api'
+import { detectCrisis } from '../lib/aiDemo'
 
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
@@ -13,11 +15,15 @@ function timeAgo(iso: string): string {
   return `${d} day${d === 1 ? '' : 's'} ago`
 }
 
+type FlaggedInquiry = Inquiry & { flagged: boolean }
+
 export function AdminDashboard() {
   const navigate = useNavigate()
   const [inquiries, setInquiries] = useState<Inquiry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [replyingId, setReplyingId] = useState<string | null>(null)
+  const [drafts, setDrafts] = useState<Record<string, string>>({})
 
   const token = localStorage.getItem('soforotto_admin_token')
 
@@ -47,12 +53,33 @@ export function AdminDashboard() {
     )
   }
 
+  // A volunteer replies from their own email. We open a pre-addressed draft, so
+  // the reply is a real message from a real person (no server email needed).
+  const openReply = (inquiry: Inquiry) => {
+    const subject = encodeURIComponent('A reply from Soforotto')
+    const body = encodeURIComponent(drafts[inquiry.id] ?? '')
+    window.location.href = `mailto:${inquiry.email}?subject=${subject}&body=${body}`
+    handleStatusChange(inquiry.id, 'contacted')
+    setReplyingId(null)
+  }
+
   const handleSignOut = () => {
     localStorage.removeItem('soforotto_admin_token')
     navigate('/admin')
   }
 
+  // Crisis triage: flag notes that trip crisis detection and float them to the
+  // top so risk never sits buried in a flat list.
+  const flagged: FlaggedInquiry[] = useMemo(
+    () => inquiries.map((i) => ({ ...i, flagged: detectCrisis(i.message) })),
+    [inquiries],
+  )
+  const sorted = useMemo(
+    () => [...flagged].sort((a, b) => Number(b.flagged) - Number(a.flagged)),
+    [flagged],
+  )
   const newCount = inquiries.filter((i) => i.status === 'new').length
+  const flaggedCount = flagged.filter((i) => i.flagged).length
 
   return (
     <div className="min-h-screen font-sans px-6 py-10 max-w-5xl mx-auto">
@@ -66,8 +93,16 @@ export function AdminDashboard() {
           Sign out
         </button>
       </div>
-      <p className="text-sm text-[#544b43] mb-8">
-        Notes teens have sent in. {newCount > 0 ? `${newCount} new to read.` : 'All caught up.'}
+      <p className="text-sm mb-8">
+        <span className="text-[#544b43]">
+          Notes teens have sent in. {newCount > 0 ? `${newCount} new to read.` : 'All caught up.'}
+        </span>
+        {flaggedCount > 0 && (
+          <span className="text-red-700 font-medium">
+            {' '}
+            {flaggedCount} flagged for urgent attention.
+          </span>
+        )}
       </p>
 
       {loading && <p className="text-sm opacity-60">Loading…</p>}
@@ -78,11 +113,20 @@ export function AdminDashboard() {
       )}
 
       <div className="flex flex-col gap-4">
-        {inquiries.map((inquiry) => (
+        {sorted.map((inquiry) => (
           <div
             key={inquiry.id}
-            className="border border-[#ece2d9] rounded-2xl p-5 flex flex-col gap-3 bg-[#fffdf9]"
+            className={`rounded-2xl p-5 flex flex-col gap-3 border ${
+              inquiry.flagged ? 'border-red-300 bg-red-50/40' : 'border-[#ece2d9] bg-[#fffdf9]'
+            }`}
           >
+            {inquiry.flagged && (
+              <div className="flex items-center gap-2 text-xs font-semibold text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-1.5">
+                <ShieldAlert size={14} className="shrink-0" />
+                Possible crisis. Read this first, and consider a professional referral.
+              </div>
+            )}
+
             <div className="flex justify-between items-start gap-4">
               <div>
                 <div className="flex items-center gap-2">
@@ -113,8 +157,55 @@ export function AdminDashboard() {
                 <option value="closed">Closed</option>
               </select>
             </div>
+
             <p className="text-sm leading-relaxed">{inquiry.message}</p>
-            <div className="flex flex-wrap items-center gap-2 mt-1">
+
+            {/* Reply */}
+            {inquiry.email ? (
+              replyingId === inquiry.id ? (
+                <div className="flex flex-col gap-2">
+                  <textarea
+                    value={drafts[inquiry.id] ?? ''}
+                    onChange={(e) => setDrafts((d) => ({ ...d, [inquiry.id]: e.target.value }))}
+                    rows={3}
+                    autoFocus
+                    placeholder="Write back as a real person, in your own words. This opens your email with the reply ready to send."
+                    className="px-3 py-2 rounded-xl border border-[#ece2d9] text-sm focus:outline-none focus:ring-2 focus:ring-[#2b2420]/20"
+                  />
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => openReply(inquiry)}
+                      disabled={!(drafts[inquiry.id] ?? '').trim()}
+                      className="text-xs px-3 py-1.5 rounded-full bg-[#2b2420] text-white disabled:opacity-40 hover:opacity-90 transition-opacity"
+                    >
+                      Open email to send
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setReplyingId(null)}
+                      className="text-xs text-[#544b43] hover:opacity-70 transition-opacity"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setReplyingId(inquiry.id)}
+                  className="self-start text-xs px-3 py-1.5 rounded-full border border-[#ece2d9] text-[#2b2420] hover:bg-[#f7f0e9] transition-colors"
+                >
+                  Reply
+                </button>
+              )
+            ) : (
+              <p className="text-xs text-[#8a7d72] italic">
+                No email left, so there is no way to reply directly. They can check The Wall.
+              </p>
+            )}
+
+            <div className="flex flex-wrap items-center gap-2 mt-1 pt-3 border-t border-[#ece2d9]">
               {inquiry.services.map((service) => (
                 <span
                   key={service}
