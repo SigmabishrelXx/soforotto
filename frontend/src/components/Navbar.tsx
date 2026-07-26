@@ -9,7 +9,7 @@ import { LimelightNav, type NavItem } from './ui/limelight-nav'
 // nav indices and the glow travels strictly left-to-right as you scroll down.
 // Top of page => Home (index 0). "The Wall" (index 6) is a route, not spied.
 const SPY_SECTIONS = [
-  { id: 'inquiry', index: 1 },
+  { id: 'share', index: 1 },
   { id: 'resources', index: 2 },
   { id: 'about', index: 3 },
   { id: 'volunteer', index: 4 },
@@ -78,7 +78,7 @@ export function Navbar() {
       onClick: () =>
         pathname === '/' ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate('/'),
     },
-    { id: 'contact', icon: <Mail />, label: 'Get in touch', onClick: () => scrollTo('inquiry') },
+    { id: 'contact', icon: <Mail />, label: 'Get in touch', onClick: () => scrollTo('share') },
     { id: 'resources', icon: <LifeBuoy />, label: 'Resources', onClick: () => scrollTo('resources') },
     { id: 'about', icon: <Info />, label: 'About', onClick: () => scrollTo('about') },
     { id: 'volunteer', icon: <HandHeart />, label: 'Volunteer', onClick: () => scrollTo('volunteer') },

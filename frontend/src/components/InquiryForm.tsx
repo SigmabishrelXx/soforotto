@@ -25,6 +25,14 @@ export function InquiryForm({ services }: InquiryFormProps) {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
+    // The button stays clickable; if they haven't picked a topic yet, tell them
+    // clearly instead of leaving a dead greyed-out button.
+    if (services.length === 0) {
+      setStatus('error')
+      setErrorMessage('Pick at least one topic above so we know where this goes.')
+      return
+    }
+
     const gate = rateLimit('inquiry-submit', { max: 5, windowMs: 600_000, minGapMs: 4000 })
     if (!gate.allowed) {
       setStatus('error')
@@ -77,7 +85,7 @@ export function InquiryForm({ services }: InquiryFormProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
-            placeholder="Email (optional, only for a reply)"
+            placeholder="Email (optional)"
             className="flex-1 px-5 py-3 rounded-xl border-2 border-[#e4d8cc] bg-[#fffdf9] text-sm placeholder:text-[#968b81] transition-all hover:border-[#cbbaa9] focus:outline-none focus:border-[#e8734a] focus:ring-[3px] focus:ring-[#f3b49b] focus:bg-white"
           />
         </div>
@@ -109,7 +117,7 @@ export function InquiryForm({ services }: InquiryFormProps) {
 
         <button
           type="submit"
-          disabled={status === 'submitting' || services.length === 0}
+          disabled={status === 'submitting'}
           className="w-full px-6 py-3.5 rounded-xl bg-[#2b2420] text-white text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-40"
         >
           {status === 'submitting' ? 'Sending…' : 'Send, anonymously'}
@@ -158,7 +166,7 @@ export function InquiryForm({ services }: InquiryFormProps) {
         )}
         {status === 'error' && <p className="text-sm text-red-600">{errorMessage}</p>}
         {services.length === 0 && status === 'idle' && (
-          <p className="text-xs opacity-50">Pick at least one thing above to send this.</p>
+          <p className="text-xs opacity-50">Tip: tap a topic above so we know where to route it.</p>
         )}
       </form>
 

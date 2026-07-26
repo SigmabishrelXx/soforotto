@@ -132,7 +132,7 @@ export const LimelightNav = ({
         >
           {cloneElement(icon, {
             className: `w-6 h-6 transition-all duration-200 ease-out group-hover:scale-125 ${
-              activeIndex === index ? 'opacity-100' : 'opacity-40 group-hover:opacity-100'
+              activeIndex === index ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'
             } ${icon.props.className || ''} ${iconClassName || ''}`,
           })}
           {label && (
