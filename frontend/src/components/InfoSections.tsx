@@ -6,8 +6,6 @@ import {
   LifeBuoy,
   MessageCircleHeart,
   ArrowUpRight,
-  Flame,
-  Award,
 } from 'lucide-react'
 import { VolunteerModal } from './VolunteerModal'
 import { RoleJourney } from './RoleJourney'
@@ -255,63 +253,48 @@ export function InfoSections() {
           transition={{ duration: 0.6 }}
           className="mt-12 sm:mt-16 rounded-3xl border border-[#ece2d9] bg-[#fffdf9] p-6 sm:p-8"
         >
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-6">
-            <p className="text-xs uppercase tracking-widest text-[#544b43]">
-              What listening adds up to
-            </p>
-            <span
-              className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full"
-              style={{ background: '#f0e7dd', color: '#8a7d72' }}
-            >
-              Example
-            </span>
-            <p className="text-[11px] text-[#8a7d72]">
-              an illustration of one listener&apos;s impact page
-            </p>
-          </div>
+          <p className="text-xs uppercase tracking-widest text-[#544b43] mb-2">
+            How volunteers grow
+          </p>
+          <p className="text-sm text-[#544b43] leading-relaxed mb-6 max-w-2xl">
+            Growth here is about trust and training, not a score. Everyone moves along the same path,
+            at their own pace.
+          </p>
 
-          <div className="grid sm:grid-cols-3 gap-4">
-            <div className="rounded-2xl bg-[#f7f0e9] border border-[#ece2d9] p-5">
-              <Flame size={18} className="text-[#c85a34] mb-2" />
-              <p className="text-2xl font-black text-[#2b2420] tabular-nums">12 weeks</p>
-              <p className="text-xs text-[#544b43] mt-1 leading-relaxed">
-                check-in streak: showed up at least once every week
-              </p>
-            </div>
-            <div className="rounded-2xl bg-[#f7f0e9] border border-[#ece2d9] p-5">
-              <MessageCircleHeart size={18} className="text-[#4e8c63] mb-2" />
-              <p className="text-2xl font-black text-[#2b2420] tabular-nums">312</p>
-              <p className="text-xs text-[#544b43] mt-1 leading-relaxed">
-                notes read and answered with care
-              </p>
-            </div>
-            <div className="rounded-2xl bg-[#f7f0e9] border border-[#ece2d9] p-5">
-              <HeartPulse size={18} className="text-[#3f77b3] mb-2" />
-              <p className="text-2xl font-black text-[#2b2420] tabular-nums">1,204</p>
-              <p className="text-xs text-[#544b43] mt-1 leading-relaxed">
-                &ldquo;you&apos;re not alone&rdquo; reactions on posts they supported
-              </p>
-            </div>
-          </div>
+          <ol className="flex flex-col gap-4">
+            {[
+              {
+                t: 'Screening',
+                d: 'A real person checks who you are and why you want to help.',
+              },
+              {
+                t: 'Crisis-response training',
+                d: 'You learn to hold hard conversations safely before you read a single note.',
+              },
+              {
+                t: 'Responding with care',
+                d: 'You start answering messages, supported by the team at first.',
+              },
+              {
+                t: 'Mentoring',
+                d: 'Experienced listeners help steady and train the newer ones.',
+              },
+            ].map((m, i) => (
+              <li key={m.t} className="flex gap-4 items-start">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fbe6dc] text-[#c85a34] text-sm font-semibold">
+                  {i + 1}
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-[#2b2420]">{m.t}</p>
+                  <p className="text-xs text-[#544b43] mt-0.5 leading-relaxed">{m.d}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
 
-          <div className="mt-6 pt-5 border-t border-[#ece2d9]">
-            <div className="flex items-center justify-between mb-2">
-              <p className="flex items-center gap-2 text-xs font-semibold text-[#2b2420]">
-                <Award size={14} className="text-[#c85a34]" /> Trusted Listener
-              </p>
-              <p className="text-[11px] text-[#8a7d72]">38 more notes to Anchor</p>
-            </div>
-            <div className="h-2 rounded-full bg-[#f0e6da] overflow-hidden">
-              <div
-                className="h-full rounded-full"
-                style={{ width: '72%', background: 'linear-gradient(90deg, #e8734a, #c85a34)' }}
-              />
-            </div>
-            <p className="text-[11px] text-[#8a7d72] mt-3 leading-relaxed">
-              Levels unlock nothing but trust: more training, then mentoring newer listeners.
-              There is no leaderboard here on purpose. Care isn&apos;t a competition.
-            </p>
-          </div>
+          <p className="text-[11px] text-[#8a7d72] mt-6 pt-5 border-t border-[#ece2d9] leading-relaxed">
+            No streaks, no levels, no leaderboard. Care isn&apos;t a competition.
+          </p>
         </motion.div>
 
         <ScrollScaleReveal className="mt-16 sm:mt-20">
