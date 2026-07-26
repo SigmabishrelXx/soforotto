@@ -27,7 +27,7 @@ const SUB0_CAPABILITIES = [
   {
     icon: Braces,
     title: 'Zero backend server code',
-    body: 'All nine endpoints are JSON “actionables.” The API is configuration, not a codebase to maintain.',
+    body: 'All eleven endpoints are JSON “actionables.” The API is configuration, not a codebase to maintain.',
   },
   {
     icon: KeyRound,
@@ -226,7 +226,7 @@ export function BuiltWith() {
           <p className="text-xs uppercase tracking-widest text-[#c85a34] font-semibold mb-1">Backend</p>
           <h3 className="text-xl font-semibold text-[#2b2420] mb-2">Sub0</h3>
           <p className="text-sm text-[#544b43] leading-relaxed">
-            Nine endpoints and two data models, all JSON. Auth, validation, generated IDs,
+            Eleven endpoints and two data models, all JSON. Auth, validation, generated IDs,
             server-side secrets and websocket broadcasts, with no server to write or run.
           </p>
           <p className="text-xs font-semibold mt-4" style={{ color: '#c85a34' }}>
