@@ -32,7 +32,16 @@
     />
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Instant branded placeholder so a cold direct-load never shows a blank
+           white page while the JS bundle loads. React replaces it on mount. -->
+      <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: #fdf6ef;">
+        <div style="text-align: center; font-family: Georgia, 'Times New Roman', serif;">
+          <div style="font-size: 34px; font-style: italic; color: #2b2420;">Soforotto</div>
+          <div style="margin-top: 10px; font-family: Inter, system-ui, sans-serif; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #a4968a;">Loading</div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

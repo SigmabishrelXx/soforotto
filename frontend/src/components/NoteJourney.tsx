@@ -87,12 +87,12 @@ export default function NoteJourney({ shareOnWall }: { shareOnWall: boolean }) {
       {/* the vignette stage */}
       <div className="relative h-52 overflow-hidden rounded-2xl border border-[#ece2d9] bg-[#f7f0e9] p-3">
         <AnimatePresence mode="wait">
-          {phase <= 1 && (
+          {phase === 0 && (
             <motion.div
               key="send"
               initial={{ opacity: 0, y: 10 }}
-              animate={phase === 0 ? { opacity: 1, y: 0 } : { opacity: 0, y: -26, scale: 0.96 }}
-              exit={{ opacity: 0 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -26, scale: 0.96 }}
               transition={{ duration: 0.45, ease: 'easeOut' }}
               className="rounded-xl border border-[#ece2d9] bg-[#fffdf9] p-3.5 shadow-sm"
             >
