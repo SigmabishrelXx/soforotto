@@ -11,7 +11,10 @@ click-by-click path.
    paste each JSON file's contents in as a new model, or use Sub0 AI with the
    plain-English prompt equivalent (studio inquiry with name/email/services/
    message/status, and an admin table with email/password).
-3. Add the API definitions from `sub0/apis/` in this order:
+3. Add the API definitions from `sub0/apis/` in this order (note:
+   `admin-sign-up.json` is not shipped in this repo; it was used once to create
+   the admin, then deleted, so recreate it here temporarily and remove it again
+   after step 6):
    `admin-sign-up` → `admin-sign-in` → `inquiry-submit` → `inquiry-list` →
    `inquiry-update-status` → `wall-list` → `wall-approve` → `wall-react` →
    `ai-chat`.

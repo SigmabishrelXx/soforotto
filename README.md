@@ -135,7 +135,7 @@ server code:
 | `sub0/models/_inquiry.json` | Data model for an incoming message (optional name/email, selected topics, message, status, wall status, reactions, timestamps). Name and email are explicitly `optional` — anonymity is enforced at the schema level, not just in the UI. |
 | `sub0/models/_admin.json` | Data model for volunteer/moderator accounts. |
 | `sub0/apis/inquiry-submit.json` | Public endpoint. Validates only the topics and message (name/email are never required), inserts with a generated KSUID id. |
-| `sub0/apis/admin-sign-up.json` | Creates a moderator account; hashes the password with bcrypt (`hashables`). **Run once to create your account, then remove or protect this file before going live** — it has no auth gate of its own. |
+| `sub0/apis/admin-sign-up.json` (intentionally not shipped in this repo: used once to create the admin account, then deleted so the repo matches the 11 live endpoints) | Creates a moderator account; hashes the password with bcrypt (`hashables`). **Run once to create your account, then remove or protect this file before going live** — it has no auth gate of its own. |
 | `sub0/apis/admin-sign-in.json` | Verifies the bcrypt hash (`verify_hashables`) and issues a JWT. |
 | `sub0/apis/inquiry-list.json` | Protected endpoint (`protected` + JWT) — lists all messages, newest first. |
 | `sub0/apis/inquiry-update-status.json` | Protected endpoint — updates a message's triage status. |
