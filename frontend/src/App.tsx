@@ -8,11 +8,14 @@ import { BuiltWith } from './pages/BuiltWith'
 import { AdminLogin } from './pages/AdminLogin'
 import { AdminDashboard } from './pages/AdminDashboard'
 import { NotFound } from './pages/NotFound'
+import { WhyThisMatters } from './pages/WhyThisMatters'
 
 // The floating nav follows every public page; admin screens keep the space.
 function Chrome() {
   const { pathname } = useLocation()
   if (pathname.startsWith('/admin')) return null
+  // Standalone info pages get a minimal chrome (just a return button), no floating nav.
+  if (pathname === '/privacy-policy' || pathname === '/built-with') return null
   return <Navbar />
 }
 
@@ -26,6 +29,7 @@ function App() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/weather" element={<Weather />} />
         <Route path="/built-with" element={<BuiltWith />} />
+        <Route path="/why-this-matters" element={<WhyThisMatters />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="*" element={<NotFound />} />

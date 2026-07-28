@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
+import { ReturnButton } from '../components/ReturnButton'
 import {
   ArrowLeft,
   Database,
@@ -51,8 +52,8 @@ const SUB0_CAPABILITIES = [
   },
   {
     icon: Radio,
-    title: 'Real-time built in',
-    body: 'broadcast_websocket_message pushes updates to every browser, so The Wall and its reactions move live.',
+    title: 'Websocket broadcast on approval',
+    body: 'The wall-approve endpoint declares a broadcast_websocket_message, so a moderator’s approval is what publishes a post to the Wall. Live no-refresh delivery depends on the host’s websocket support.',
   },
   {
     icon: EyeOff,
@@ -79,7 +80,7 @@ const SUB0_CAPABILITIES = [
 const LINGOQL_POINTS = [
   'Hosts the React + Vite frontend. Its buildpack (Railpack / Nixpacks) auto-detects the app and builds it, no Dockerfile needed.',
   'Runs the managed Postgres database that every Sub0 model reads from and writes to.',
-  'Provides the managed websocket layer that carries Sub0’s live broadcasts back to the browser.',
+  'Provides the managed websocket layer the Sub0 backend is built against.',
   'Serves the Sub0 API alongside the app (at api.<project>.lingoql.com) and gives the single live URL used for the submission.',
 ]
 
@@ -87,7 +88,7 @@ const VERIFY = [
   'The live site’s URL is a LingoQL URL. The hosting itself is the proof.',
   'Open DevTools → Network and submit the form: the requests hit the Sub0 API base.',
   'The repo’s sub0/ folder holds every model and endpoint as declarative JSON.',
-  'Approve a post in /admin/dashboard and watch The Wall update with no refresh. That’s the websocket broadcast.',
+  'Approve a pending post in /admin/dashboard, then open /wall: it is now public and anonymized, and the sender’s name and email are never included.',
 ]
 
 const AI_PROXY_SNIPPET = `{
@@ -184,10 +185,13 @@ export function BuiltWith() {
   const [tool, setTool] = useState<'sub0' | 'lingoql'>('sub0')
 
   return (
-    <div className="min-h-screen font-sans px-6 pt-28 pb-16 max-w-3xl mx-auto">
-      <Link to="/" className="text-sm text-[#544b43] hover:opacity-70 transition-opacity inline-flex items-center gap-1.5">
-        <ArrowLeft size={15} /> Back to Soforotto
-      </Link>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="min-h-screen font-sans px-6 pt-20 pb-16 max-w-3xl mx-auto"
+    >
+      <ReturnButton />
 
       <p className="text-[11px] uppercase tracking-[0.18em] text-[#544b43] mt-8 mb-3">
         Zero to Query hackathon · How it’s built
@@ -356,9 +360,9 @@ export function BuiltWith() {
                 <div className="rounded-2xl border border-[#ece2d9] bg-[#fffdf9] p-4 flex gap-3">
                   <Radio size={18} className="shrink-0 mt-0.5 text-[#3f77b3]" />
                   <p className="text-[13px] text-[#544b43] leading-relaxed">
-                    <strong className="text-[#2b2420]">Real-time:</strong> LingoQL&apos;s managed
-                    websockets carry Sub0&apos;s broadcasts to every browser, so The Wall updates
-                    live.
+                    <strong className="text-[#2b2420]">Real-time, declared:</strong> the backend
+                    declares a websocket broadcast on approval. Live, no-refresh delivery depends on
+                    the host&apos;s websocket support.
                   </p>
                 </div>
                 <div className="rounded-2xl border border-[#ece2d9] bg-[#fffdf9] p-4 flex gap-3">
@@ -404,6 +408,6 @@ export function BuiltWith() {
           <ArrowLeft size={15} /> Back to Soforotto
         </Link>
       </div>
-    </div>
+    </motion.div>
   )
 }

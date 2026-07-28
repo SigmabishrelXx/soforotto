@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Home, LifeBuoy, Info, HandHeart, Lock, Mail, MessagesSquare, CloudSun } from 'lucide-react'
+import { Home, LifeBuoy, Info, HandHeart, Lock, Mail, MessagesSquare, CloudSun, TrendingUp } from 'lucide-react'
 import { LimelightNav, type NavItem } from './ui/limelight-nav'
 
 // Sections the nav "limelight" follows as you scroll, in document (scroll) order.
@@ -22,6 +22,7 @@ const ROUTE_INDEX: Record<string, number> = {
   '/weather': 6,
   '/wall': 7,
   '/privacy-policy': 5,
+  '/why-this-matters': 8,
 }
 
 export function Navbar() {
@@ -85,6 +86,7 @@ export function Navbar() {
     { id: 'privacy', icon: <Lock />, label: 'Privacy', onClick: () => scrollTo('privacy') },
     { id: 'weather', icon: <CloudSun />, label: 'Weather', onClick: () => navigate('/weather') },
     { id: 'wall', icon: <MessagesSquare />, label: 'The Wall', onClick: () => navigate('/wall') },
+    { id: 'why', icon: <TrendingUp />, label: 'Why this matters', onClick: () => navigate('/why-this-matters') },
   ]
 
   return (

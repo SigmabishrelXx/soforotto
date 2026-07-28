@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
 import { AI_DEMO_MODE } from '../lib/api'
+import { motion } from 'motion/react'
+import { ReturnButton } from '../components/ReturnButton'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -12,10 +13,13 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export function PrivacyPolicy() {
   return (
-    <div className="min-h-screen font-sans px-6 pt-28 pb-16 max-w-2xl mx-auto">
-      <Link to="/" className="text-sm text-[#544b43] hover:opacity-70 transition-opacity">
-        &larr; Back to Soforotto
-      </Link>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="min-h-screen font-sans px-6 pt-20 pb-16 max-w-2xl mx-auto"
+    >
+      <ReturnButton />
 
       <h1 className="text-4xl md:text-5xl font-medium tracking-tight mt-6 mb-2">Privacy Policy</h1>
       <p className="text-sm text-[#544b43] mb-10">Last updated: July 2026</p>
@@ -138,6 +142,6 @@ export function PrivacyPolicy() {
           service.
         </p>
       </Section>
-    </div>
+    </motion.div>
   )
 }
