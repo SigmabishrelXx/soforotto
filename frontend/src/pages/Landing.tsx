@@ -8,6 +8,7 @@ import { InquiryForm } from '../components/InquiryForm'
 import { InfoSections } from '../components/InfoSections'
 import { AIChat } from '../components/AIChat'
 import { EmergencyHelp } from '../components/EmergencyHelp'
+import { FAQ } from '../components/FAQ'
 import { Footer } from '../components/Footer'
 
 export function Landing() {
@@ -25,12 +26,19 @@ export function Landing() {
   }, [hash])
 
   const scrollToInquiry = () => {
-    document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth' })
+    // Land the form centered in view, not jammed to the top under the navbar.
+    document.getElementById('inquiry')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
+
+  // The hero "Share, anonymously" button lands on the top of the share SECTION
+  // (the "Share what's going on" header + topic pills), not way down at the form.
+  const scrollToShare = () => {
+    document.getElementById('share')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
     <div>
-      <Hero onShare={scrollToInquiry} onOpenChat={() => setIsChatOpen(true)} />
+      <Hero onShare={scrollToShare} onOpenChat={() => setIsChatOpen(true)} />
 
       <HowItWorks />
 
@@ -52,6 +60,8 @@ export function Landing() {
       </section>
 
       <InfoSections />
+
+      <FAQ />
 
       <Footer />
 

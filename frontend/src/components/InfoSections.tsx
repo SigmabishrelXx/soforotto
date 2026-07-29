@@ -150,10 +150,10 @@ export function InfoSections() {
         <SectionHeading eyebrow="Why this exists" title="About" />
         <p className="text-lg sm:text-xl text-[#544b43] leading-relaxed max-w-2xl">
           Most teens don&apos;t have someone easy to talk to who isn&apos;t a parent, a teacher, or
-          a scheduled therapy appointment. Soforotto is a small group of trained volunteers and
-          counselors-in-training who read every message that comes in and respond with care, not
-          a form that disappears into a void. The AI is there for instant company when you need it
-          right now; it&apos;s never a replacement for the humans reading what you send.
+          a scheduled therapy appointment. Soforotto was built by one person for a hackathon, around
+          a simple idea: instead of a form that disappears into a void, a real person reads every
+          message and responds with care. The AI is there for instant company when you need it right
+          now; it&apos;s never a replacement for the human reading what you send.
         </p>
 
         <ScrollScaleReveal className="mt-16 sm:mt-20">

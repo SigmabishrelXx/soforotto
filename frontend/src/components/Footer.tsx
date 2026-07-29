@@ -9,7 +9,7 @@ const EXPLORE = [
 ]
 
 const SUPPORT = [
-  { label: 'Get in touch', href: '/#inquiry', router: false },
+  { label: 'Get in touch', href: '/#share', router: false },
   { label: 'Your privacy', href: '/#privacy', router: false },
   { label: 'Privacy Policy', href: '/privacy-policy', router: true },
 ]
