@@ -2,7 +2,7 @@
   "id": "volunteer-impact-01",
   "resource": "volunteer-impact",
   "tokenize": { "type": "JWT", "algorithm": "HS256", "encryption_key": "$ENV.JWT_SECRET_KEY" },
-  "protected": { "provide_as": "Authorization", "extract_claims": ["id"] },
+  "protected": { "provide_as": "x-access-token", "extract_claims": ["id"] },
   "actionables": [
     {
       "id": 1,

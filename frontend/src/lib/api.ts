@@ -124,7 +124,7 @@ async function request<T>(
     ...rest,
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(token ? { 'x-access-token': token } : {}),
       ...headers,
     },
   })

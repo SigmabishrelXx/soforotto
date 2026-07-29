@@ -7,7 +7,7 @@
     "encryption_key": "$ENV.JWT_SECRET_KEY"
   },
   "protected": {
-    "provide_as": "Authorization",
+    "provide_as": "x-access-token",
     "extract_claims": ["id"]
   },
   "actionables": [
