@@ -245,7 +245,7 @@ export function updateInquiryStatus(token: string, id: string, status: string) {
   return request<{ id: string; status: string }>('/inquiry-update-status', {
     method: 'POST',
     token,
-    body: JSON.stringify({ id, status }),
+    body: JSON.stringify({ note_id: id, status }),
   })
 }
 
@@ -257,7 +257,7 @@ export function approveToWall(token: string, id: string) {
   return request<{ id: string }>('/wall-approve', {
     method: 'POST',
     token,
-    body: JSON.stringify({ id }),
+    body: JSON.stringify({ note_id: id }),
   })
 }
 

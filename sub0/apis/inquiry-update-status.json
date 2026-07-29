@@ -16,7 +16,7 @@
       "mode": "QUERY",
       "payload_validation": [
         {
-          "field": { "id": { "type": "STRING" } },
+          "field": { "note_id": { "type": "STRING" } },
           "min_length": 1,
           "max_length": 32
         },
@@ -28,7 +28,7 @@
       ],
       "sql_query": {
         "query": "UPDATE _inquiry SET status = $1, updated_at = $2::timestamptz WHERE id = $3 RETURNING id, status",
-        "parameters": ["status", "$DATETIME", "id"]
+        "parameters": ["status", "$DATETIME", "note_id"]
       }
     }
   ],

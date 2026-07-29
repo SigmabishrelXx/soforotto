@@ -16,14 +16,14 @@
       "mode": "QUERY",
       "payload_validation": [
         {
-          "field": { "id": { "type": "STRING" } },
+          "field": { "note_id": { "type": "STRING" } },
           "min_length": 1,
           "max_length": 32
         }
       ],
       "sql_query": {
         "query": "UPDATE _inquiry SET wall_status = 'approved' WHERE id = $1 AND wall_status = 'pending' RETURNING id",
-        "parameters": ["id"]
+        "parameters": ["note_id"]
       },
       "broadcast_websocket_message": {
         "broadcast_type": "ALL",
